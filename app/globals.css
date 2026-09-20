@@ -7,11 +7,11 @@
   --card-foreground: #0f2744;
   --primary: #0f2744;
   --primary-foreground: #ffffff;
-  --secondary: #e8f4f6;
+  --secondary: #eef6f7;
   --secondary-foreground: #0f2744;
   --accent: #3d9a9a;
   --accent-foreground: #ffffff;
-  --muted: #f0f4f8;
+  --muted: #f3f6f9;
   --muted-foreground: #5a6b7d;
   --border: #e2e8f0;
   --ring: #3d9a9a;
@@ -20,6 +20,7 @@
   --aqua: #3d9a9a;
   --aqua-light: #e8f4f6;
   --cream: #fafbfc;
+  --warm-white: #fdfcfa;
   --radius: 0.75rem;
 }
 

@@ -1,67 +1,18 @@
-"use client";
-
-import { Hero } from "@/components/home/Hero";
-import { useAIAssistant } from "@/components/ai/AIAssistantProvider";
-import { TrustStrip } from "@/components/home/TrustStrip";
-import { WhyChooseUs } from "@/components/home/WhyChooseUs";
-import { TreatmentsSection } from "@/components/home/TreatmentsSection";
-import { DoctorsSection } from "@/components/home/DoctorsSection";
-import { TechnologySection } from "@/components/home/TechnologySection";
-import { PatientJourney } from "@/components/home/PatientJourney";
-import { TestimonialsSection } from "@/components/home/TestimonialsSection";
-import { InternationalPatientSection } from "@/components/home/InternationalPatientSection";
-import { EmergencyCTA } from "@/components/home/EmergencyCTA";
-import { FAQSection } from "@/components/home/FAQSection";
-import { BlogPreview } from "@/components/home/BlogPreview";
-import { SectionHeading } from "@/components/layout/SectionHeading";
-import { AppointmentForm } from "@/components/appointment/AppointmentForm";
-import { patientRating } from "@/data/clinic";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { HomePageClient } from "@/components/home/HomePageClient";
+import {
+  getFAQSchema,
+  getOrganizationSchema,
+  getWebSiteSchema,
+} from "@/lib/seo/structured-data";
 
 export default function HomePage() {
-  const { open: openAI } = useAIAssistant();
-
   return (
     <>
-      <Hero onOpenAI={openAI} />
-      <TrustStrip />
-
-      <section className="border-b border-border bg-white py-6">
-        <div className="container-narrow px-4 text-center sm:px-6 lg:px-8">
-          <p className="text-sm text-muted-foreground">
-            Rated{" "}
-            <span className="font-semibold text-navy">
-              {patientRating.score} out of {patientRating.maxScore}
-            </span>{" "}
-            based on {patientRating.reviewCount} patient ratings
-          </p>
-        </div>
-      </section>
-
-      <WhyChooseUs />
-      <TreatmentsSection />
-      <DoctorsSection />
-      <TechnologySection />
-      <PatientJourney />
-      <TestimonialsSection />
-      <InternationalPatientSection />
-      <EmergencyCTA />
-
-      <section className="section-padding bg-white">
-        <div className="container-narrow">
-          <SectionHeading
-            eyebrow="Book Your Visit"
-            title="Request an appointment"
-            description="Fill in your details and our team will contact you to confirm your preferred time."
-            align="center"
-          />
-          <div className="mx-auto max-w-2xl rounded-3xl border border-border bg-cream p-6 md:p-10">
-            <AppointmentForm />
-          </div>
-        </div>
-      </section>
-
-      <FAQSection />
-      <BlogPreview />
+      <JsonLd
+        data={[getOrganizationSchema(), getWebSiteSchema(), getFAQSchema()]}
+      />
+      <HomePageClient />
     </>
   );
 }

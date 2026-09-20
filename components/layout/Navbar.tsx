@@ -11,8 +11,8 @@ import { trackEvent } from "@/lib/utils/analytics";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/#treatments", label: "Treatments" },
-  { href: "/#doctors", label: "Doctors" },
+  { href: "/treatments", label: "Treatments" },
+  { href: "/doctors", label: "Doctors" },
   { href: "/#technology", label: "Technology" },
   { href: "/#patient-journey", label: "Patient Experience" },
   { href: "/#dental-tourism", label: "Dental Tourism" },
@@ -53,7 +53,10 @@ export function Navbar() {
         aria-hidden={isOpen ? true : undefined}
       >
         <nav
-          className="container-narrow flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8 lg:h-20"
+          className={cn(
+            "container-narrow flex items-center justify-between px-4 transition-all duration-300 sm:px-6 lg:px-8",
+            scrolled ? "h-14 lg:h-16" : "h-16 lg:h-20"
+          )}
           aria-label="Main navigation"
         >
           <Link

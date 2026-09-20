@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
-import { clinicName, clinicDescription, contact } from "@/data/clinic";
+import { clinicName, clinicDescription } from "@/data/clinic";
 import { SiteShell } from "@/components/layout/SiteShell";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { getOrganizationSchema, getWebSiteSchema } from "@/lib/seo/structured-data";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
     "dental clinic Gurugram",
     "dental implants Gurgaon",
     "root canal Gurgaon",
-    "cosmetic dentistry",
+    "cosmetic dentistry Gurgaon",
     "World of Dentistry",
   ],
   openGraph: {
@@ -43,46 +45,8 @@ export const metadata: Metadata = {
     title: `${clinicName} | Premium Dental Clinic in Gurgaon`,
     description: clinicDescription,
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  alternates: {
-    canonical: "/",
-  },
-};
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Dentist",
-  name: clinicName,
-  description: clinicDescription,
-  url: "https://www.worldofdentistry.co.in",
-  telephone: contact.phone,
-  email: contact.email,
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: contact.address.line1,
-    addressLocality: contact.address.city,
-    addressRegion: contact.address.state,
-    postalCode: contact.address.postalCode,
-    addressCountry: contact.address.country,
-  },
-  openingHoursSpecification: {
-    "@type": "OpeningHoursSpecification",
-    dayOfWeek: [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ],
-    opens: "09:00",
-    closes: "23:00",
-  },
-  medicalSpecialty: "Dentistry",
+  robots: { index: true, follow: true },
+  alternates: { canonical: "/" },
 };
 
 export default function RootLayout({
@@ -95,13 +59,14 @@ export default function RootLayout({
       lang="en"
       className={`${playfair.variable} ${dmSans.variable} h-full scroll-smooth`}
     >
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </head>
       <body className="min-h-full flex flex-col antialiased">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-navy focus:px-4 focus:py-2 focus:text-white"
+        >
+          Skip to main content
+        </a>
+        <JsonLd data={[getOrganizationSchema(), getWebSiteSchema()]} />
         <SiteShell>{children}</SiteShell>
       </body>
     </html>

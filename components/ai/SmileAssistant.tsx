@@ -185,15 +185,24 @@ export function SmileAssistant({
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={shouldReduceMotion ? false : { opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed bottom-20 right-4 z-50 flex h-[min(600px,calc(100vh-120px))] w-[min(400px,calc(100vw-32px))] flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-2xl lg:bottom-6"
-            role="dialog"
-            aria-label="Smile Assistant chat"
-          >
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[70] bg-navy/30 backdrop-blur-sm lg:bg-navy/20"
+              onClick={() => setIsOpen(false)}
+              aria-hidden
+            />
+            <motion.div
+              initial={shouldReduceMotion ? false : { opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 40 }}
+              transition={{ type: "spring", damping: 28, stiffness: 320 }}
+              className="fixed inset-0 z-[71] flex flex-col overflow-hidden bg-white lg:inset-y-0 lg:left-auto lg:w-full lg:max-w-md lg:rounded-l-3xl lg:shadow-2xl"
+              role="dialog"
+              aria-label="Smile Assistant chat"
+            >
             <div className="flex items-center justify-between border-b border-border bg-navy px-4 py-3 text-white">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-aqua">
@@ -437,6 +446,7 @@ export function SmileAssistant({
               </form>
             )}
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

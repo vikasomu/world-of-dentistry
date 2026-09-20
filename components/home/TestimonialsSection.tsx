@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { SectionHeading } from "@/components/layout/SectionHeading";
@@ -8,15 +8,44 @@ import { testimonials } from "@/data/clinic";
 
 export function TestimonialsSection() {
   const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const testimonial = testimonials[current];
 
-  const next = () => setCurrent((c) => (c + 1) % testimonials.length);
-  const prev = () =>
-    setCurrent((c) => (c - 1 + testimonials.length) % testimonials.length);
+  const next = useCallback(
+    () => setCurrent((c) => (c + 1) % testimonials.length),
+    []
+  );
+  const prev = useCallback(
+    () => setCurrent((c) => (c - 1 + testimonials.length) % testimonials.length),
+    []
+  );
+
+  useEffect(() => {
+    if (shouldReduceMotion || paused) return;
+    const timer = setInterval(next, 6000);
+    return () => clearInterval(timer);
+  }, [shouldReduceMotion, paused, next]);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [next, prev]);
 
   return (
-    <section className="section-padding bg-cream">
+    <section
+      className="section-padding bg-cream"
+      aria-roledescription="carousel"
+      aria-label="Patient testimonials"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
       <div className="container-narrow">
         <SectionHeading
           eyebrow="Patient Stories"
@@ -32,7 +61,7 @@ export function TestimonialsSection() {
               initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.35 }}
               className="rounded-3xl border border-border bg-white p-8 shadow-sm md:p-12"
             >
               <Quote className="h-8 w-8 text-aqua/40" aria-hidden="true" />
@@ -82,6 +111,7 @@ export function TestimonialsSection() {
                   i === current ? "w-6 bg-aqua" : "w-2 bg-border"
                 }`}
                 aria-label={`Go to testimonial ${i + 1}`}
+                aria-current={i === current ? "true" : undefined}
               />
             ))}
           </div>

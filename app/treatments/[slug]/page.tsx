@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CheckCircle } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -9,6 +9,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { AppointmentForm } from "@/components/appointment/AppointmentForm";
+import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import {
+  getBreadcrumbSchema,
+  getTreatmentSchema,
+} from "@/lib/seo/structured-data";
 import {
   treatments,
   getTreatmentBySlug,
@@ -29,11 +36,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const treatment = getTreatmentBySlug(slug);
   if (!treatment) return { title: "Treatment Not Found" };
 
-  return {
+  return createPageMetadata({
     title: `${treatment.name} in Gurgaon`,
     description: treatment.shortDescription,
-    alternates: { canonical: `/treatments/${slug}` },
-  };
+    path: `/treatments/${slug}`,
+    keywords: [treatment.name, `${treatment.name} Gurgaon`, "dental clinic Gurugram"],
+  });
 }
 
 export default async function TreatmentPage({ params }: PageProps) {
@@ -47,15 +55,32 @@ export default async function TreatmentPage({ params }: PageProps) {
 
   return (
     <>
+      <JsonLd
+        data={[
+          getTreatmentSchema(treatment),
+          getBreadcrumbSchema([
+            { name: "Home", url: "https://www.worldofdentistry.co.in/" },
+            {
+              name: "Treatments",
+              url: "https://www.worldofdentistry.co.in/treatments",
+            },
+            {
+              name: treatment.name,
+              url: `https://www.worldofdentistry.co.in/treatments/${slug}`,
+            },
+          ]),
+        ]}
+      />
       <section className="bg-navy pt-28 pb-16 text-white">
         <div className="container-narrow px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/#treatments"
-            className="mb-6 inline-flex items-center gap-2 text-sm text-white/70 hover:text-white"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            All Treatments
-          </Link>
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Treatments", href: "/treatments" },
+              { label: treatment.name },
+            ]}
+            className="mb-6 [&_a]:text-white/70 [&_a:hover]:text-white [&_span]:text-white [&_svg]:text-white/50"
+          />
           <h1 className="font-heading text-4xl font-medium md:text-5xl">
             {treatment.name}
           </h1>

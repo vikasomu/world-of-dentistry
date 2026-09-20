@@ -15,7 +15,7 @@ function ShellContent({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
-      <main className="flex-1 pb-16 lg:pb-0">{children}</main>
+      <main id="main-content" className="flex-1 pb-16 lg:pb-0">{children}</main>
       <Footer />
       <MobileBottomBar />
       <SmileAssistant externalOpen={isOpen} onExternalOpenChange={setOpen} />

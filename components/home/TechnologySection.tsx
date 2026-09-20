@@ -1,98 +1,103 @@
 "use client";
 
-import { useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import { SectionHeading } from "@/components/layout/SectionHeading";
+import { TechnologyVisual3D } from "@/components/three/LazyThreeVisuals";
 import { technologies } from "@/data/clinic";
 import { cn } from "@/lib/utils/cn";
 
+const phases = [
+  { label: "Scan" },
+  { label: "Plan" },
+  { label: "Treat" },
+];
+
+function useMotionValueState(motionValue: MotionValue<number>) {
+  const [value, setValue] = useState(0);
+  useEffect(() => motionValue.on("change", setValue), [motionValue]);
+  return value;
+}
+
+function ScrollLinkedVisual({ progress }: { progress: MotionValue<number> }) {
+  const value = useMotionValueState(progress);
+  return <TechnologyVisual3D progress={value} className="h-full w-full" />;
+}
+
 export function TechnologySection() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
   const shouldReduceMotion = useReducedMotion();
-  const active = technologies[activeIndex];
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const progress = useTransform(scrollYProgress, [0.1, 0.7], [0, 1]);
 
   return (
-    <section id="technology" className="section-padding bg-navy text-white overflow-hidden">
-      <div className="container-narrow">
+    <section
+      id="technology"
+      ref={sectionRef}
+      className="relative overflow-hidden bg-navy py-24 text-white md:py-32"
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(61,154,154,0.15),transparent_50%)]" />
+
+      <div className="container-narrow relative px-4 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="Technology"
-          title="Precision tools for better outcomes"
-          description="ISO certified and internationally acclaimed dental products and equipment support every treatment we deliver."
+          title="Precision meets modern dentistry"
+          description="ISO certified and internationally acclaimed equipment supports accurate diagnosis, planning, and treatment delivery."
           align="center"
-          className="[&_h2]:text-white [&_p]:text-white/70 [&_p:first-of-type]:text-aqua"
+          className="[&_h2]:text-white [&_p:first-of-type]:text-aqua [&_p:last-of-type]:text-white/70"
         />
 
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div className="relative mx-auto aspect-square w-full max-w-md">
-            <div className="absolute inset-0 rounded-full border border-white/10" />
-            <div className="absolute inset-8 rounded-full border border-white/10" />
-            <div className="absolute inset-16 rounded-full border border-aqua/30 bg-aqua/5" />
-
-            {!shouldReduceMotion && (
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0"
-              >
-                {technologies.map((tech, i) => {
-                  const angle = (i / technologies.length) * 360;
-                  const rad = (angle * Math.PI) / 180;
-                  const x = 50 + 42 * Math.cos(rad);
-                  const y = 50 + 42 * Math.sin(rad);
-                  return (
-                    <button
-                      key={tech.slug}
-                      type="button"
-                      onClick={() => setActiveIndex(i)}
-                      className={cn(
-                        "absolute -translate-x-1/2 -translate-y-1/2 rounded-full px-3 py-1.5 text-xs font-medium transition-all",
-                        activeIndex === i
-                          ? "bg-aqua text-white scale-110"
-                          : "bg-white/10 text-white/80 hover:bg-white/20"
-                      )}
-                      style={{ left: `${x}%`, top: `${y}%` }}
-                      aria-pressed={activeIndex === i}
-                    >
-                      {tech.name.split(" ")[0]}
-                    </button>
-                  );
-                })}
-              </motion.div>
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          <div className="relative aspect-square max-h-[420px] overflow-hidden rounded-3xl border border-white/10 bg-white/5 lg:max-h-none">
+            {shouldReduceMotion ? (
+              <TechnologyVisual3D progress={0.5} className="h-full w-full" />
+            ) : (
+              <ScrollLinkedVisual progress={progress} />
             )}
 
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                <p className="text-sm text-aqua">Featured</p>
-                <p className="font-heading text-2xl font-medium">{active.name}</p>
-              </div>
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center gap-4 bg-gradient-to-t from-navy/90 to-transparent p-6">
+              {phases.map((phase) => (
+                <span
+                  key={phase.label}
+                  className="rounded-full border border-white/20 px-4 py-1.5 text-xs font-medium uppercase tracking-wider text-white/80"
+                >
+                  {phase.label}
+                </span>
+              ))}
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {technologies.map((tech, index) => (
-              <motion.button
+              <motion.div
                 key={tech.slug}
-                type="button"
-                onClick={() => setActiveIndex(index)}
                 initial={shouldReduceMotion ? false : { opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ delay: index * 0.06, duration: 0.45 }}
                 className={cn(
-                  "w-full rounded-xl border p-5 text-left transition-all",
-                  activeIndex === index
-                    ? "border-aqua bg-white/10"
-                    : "border-white/10 bg-white/5 hover:bg-white/10"
+                  "group rounded-2xl border border-white/10 bg-white/5 p-5 transition-all hover:border-aqua/40 hover:bg-white/10"
                 )}
               >
-                <h3 className="font-medium text-white">{tech.name}</h3>
+                <h3 className="font-heading text-lg font-medium text-white group-hover:text-aqua">
+                  {tech.name}
+                </h3>
                 <p className="mt-2 text-sm leading-relaxed text-white/70">
                   {tech.description}
                 </p>
-              </motion.button>
+              </motion.div>
             ))}
-            <p className="text-xs text-white/50">
-              Technology supports treatment planning and delivery. Individual outcomes depend on clinical assessment.
+            <p className="pt-2 text-xs text-white/45">
+              Technology supports clinical decision-making. Individual outcomes depend on examination and treatment planning.
             </p>
           </div>
         </div>
