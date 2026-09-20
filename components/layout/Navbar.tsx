@@ -33,8 +33,10 @@ export function Navbar() {
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
+    document.body.classList.toggle("mobile-menu-open", isOpen);
     return () => {
       document.body.style.overflow = "";
+      document.body.classList.remove("mobile-menu-open");
     };
   }, [isOpen]);
 
@@ -43,10 +45,12 @@ export function Navbar() {
       <header
         className={cn(
           "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+          isOpen && "max-lg:pointer-events-none max-lg:opacity-0",
           scrolled
             ? "border-b border-border/60 bg-white/95 shadow-sm backdrop-blur-md"
             : "bg-transparent"
         )}
+        aria-hidden={isOpen ? true : undefined}
       >
         <nav
           className="container-narrow flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8 lg:h-20"
@@ -112,7 +116,7 @@ export function Navbar() {
             initial={shouldReduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-navy/20 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-[60] bg-navy/20 backdrop-blur-sm lg:hidden"
             onClick={() => setIsOpen(false)}
           >
             <motion.div
@@ -120,23 +124,33 @@ export function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="absolute right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl"
+              className="absolute right-0 top-0 flex h-full w-full max-w-sm flex-col bg-white shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex h-16 items-center justify-between border-b border-border px-6">
-                <span className="font-heading text-lg font-semibold text-navy">
-                  Menu
-                </span>
+              <div className="flex h-16 shrink-0 items-center justify-between border-b border-border px-6">
+                <Link
+                  href="/"
+                  onClick={() => setIsOpen(false)}
+                  className="flex flex-col"
+                  aria-label={`${clinicName} home`}
+                >
+                  <span className="font-heading text-lg font-semibold tracking-tight text-navy">
+                    World of
+                  </span>
+                  <span className="-mt-0.5 text-[10px] font-medium uppercase tracking-[0.2em] text-aqua">
+                    Dentistry
+                  </span>
+                </Link>
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
                   aria-label="Close menu"
-                  className="rounded-lg p-2 text-navy"
+                  className="rounded-lg p-2 text-navy hover:bg-muted"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
-              <div className="flex flex-col gap-1 p-6">
+              <div className="flex flex-1 flex-col gap-1 overflow-y-auto p-6 pb-28">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}

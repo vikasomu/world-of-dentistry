@@ -126,6 +126,11 @@ h6 {
   background-size: 24px 24px;
 }
 
+body.mobile-menu-open [data-hide-when-menu-open] {
+  opacity: 0;
+  pointer-events: none;
+}
+
 @keyframes accordion-down {
   from {
     height: 0;

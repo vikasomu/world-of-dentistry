@@ -174,6 +174,7 @@ export function SmileAssistant({
             }}
             className="fixed bottom-20 right-4 z-50 flex items-center gap-2 rounded-full bg-navy px-5 py-3 text-sm font-medium text-white shadow-xl hover:bg-navy-light lg:bottom-6"
             aria-label="Open Smile Assistant"
+            data-hide-when-menu-open
           >
             <Sparkles className="h-5 w-5" />
             <span className="hidden sm:inline">Ask Smile Assistant</span>
