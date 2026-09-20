@@ -5,7 +5,9 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { SectionHeading } from "@/components/layout/SectionHeading";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { treatments, treatmentCategories } from "@/data/clinic";
+import { getTreatmentImage } from "@/data/images";
 import { cn } from "@/lib/utils/cn";
 import { trackEvent } from "@/lib/utils/analytics";
 
@@ -48,39 +50,48 @@ export function TreatmentsSection() {
           </nav>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            {filtered.map((treatment, index) => (
-              <motion.article
-                key={treatment.slug}
-                initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="group relative overflow-hidden rounded-2xl border border-border bg-cream transition-all hover:border-aqua/30 hover:shadow-lg"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-aqua/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                <div className="relative p-6">
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-aqua-light">
-                    <TreatmentIcon />
+            {filtered.map((treatment, index) => {
+              const image = getTreatmentImage(treatment.slug);
+              return (
+                <motion.article
+                  key={treatment.slug}
+                  initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
+                  className="group overflow-hidden rounded-2xl border border-border bg-white transition-all hover:-translate-y-1 hover:border-aqua/30 hover:shadow-xl"
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <OptimizedImage
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 25vw"
+                      className="transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy/50 via-transparent to-transparent opacity-80" />
                   </div>
-                  <h3 className="font-heading text-lg font-medium text-navy">
-                    {treatment.name}
-                  </h3>
-                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                    {treatment.shortDescription}
-                  </p>
-                  <Link
-                    href={`/treatments/${treatment.slug}`}
-                    onClick={() =>
-                      trackEvent("treatment_viewed", { slug: treatment.slug })
-                    }
-                    className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-aqua transition-colors hover:text-navy"
-                  >
-                    Explore Treatment
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </div>
-              </motion.article>
-            ))}
+                  <div className="relative p-5">
+                    <h3 className="font-heading text-lg font-medium text-navy">
+                      {treatment.name}
+                    </h3>
+                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                      {treatment.shortDescription}
+                    </p>
+                    <Link
+                      href={`/treatments/${treatment.slug}`}
+                      onClick={() =>
+                        trackEvent("treatment_viewed", { slug: treatment.slug })
+                      }
+                      className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-aqua transition-colors hover:text-navy"
+                    >
+                      Explore Treatment
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </div>
+                </motion.article>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -110,20 +121,5 @@ function CategoryButton({
     >
       {label}
     </button>
-  );
-}
-
-function TreatmentIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="h-5 w-5 text-aqua"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      aria-hidden="true"
-    >
-      <path d="M12 3c2 0 4 2 4 5c0 2-1 4-2 5c-1 1-2 3-2 5s1 4 2 4s2-2 2-4s-1-4-2-5c-1-1-2-3-2-5c0-3 2-5 4-5z" />
-    </svg>
   );
 }

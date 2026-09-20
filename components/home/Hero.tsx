@@ -5,7 +5,9 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { HeroVisual3D } from "@/components/three/LazyThreeVisuals";
+import { siteImages } from "@/data/images";
 import { contact } from "@/data/clinic";
 
 export function Hero() {
@@ -13,10 +15,18 @@ export function Hero() {
 
   return (
     <section className="relative min-h-[90vh] overflow-hidden pt-24 lg:pt-28">
-      <div className="absolute inset-0 bg-gradient-to-b from-cream via-white to-aqua-light/20" />
+      <div className="absolute inset-0">
+        <OptimizedImage
+          src={siteImages.hero.primary}
+          alt={siteImages.hero.alt}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-[0.07]"
+        />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-cream/95 via-white/90 to-aqua-light/30" />
       <div className="absolute inset-0 dental-pattern opacity-30" />
-      <div className="absolute -right-40 top-10 h-[420px] w-[420px] rounded-full bg-aqua/10 blur-3xl" />
-      <div className="absolute -left-40 bottom-0 h-80 w-80 rounded-full bg-navy/5 blur-3xl" />
 
       <div className="section-padding container-narrow relative">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
@@ -26,7 +36,7 @@ export function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <Badge variant="outline" className="mb-5">
+              <Badge variant="outline" className="mb-5 bg-white/80">
                 Gurgaon · Sector 46 · Open Daily 9 AM – 11 PM
               </Badge>
             </motion.div>
@@ -65,8 +75,8 @@ export function Hero() {
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/#doctors">
+              <Button size="lg" variant="outline" asChild className="bg-white/80">
+                <Link href="/doctors">
                   <Users className="h-4 w-4" />
                   Meet Our Doctors
                 </Link>
@@ -96,7 +106,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             className="relative aspect-[4/5] w-full max-h-[640px] lg:aspect-square lg:max-h-none"
           >
-            <HeroVisual3D className="h-full w-full shadow-2xl shadow-navy/10" />
+            <HeroVisual3D className="h-full w-full shadow-2xl shadow-navy/10 ring-1 ring-border/50" />
           </motion.div>
         </div>
       </div>

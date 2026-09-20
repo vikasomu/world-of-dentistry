@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { AppointmentForm } from "@/components/appointment/AppointmentForm";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { TreatmentHeroImage } from "@/components/treatments/TreatmentHeroImage";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import {
@@ -71,8 +72,9 @@ export default async function TreatmentPage({ params }: PageProps) {
           ]),
         ]}
       />
-      <section className="bg-navy pt-28 pb-16 text-white">
-        <div className="container-narrow px-4 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden bg-navy pt-28 pb-16 text-white">
+        <TreatmentHeroImage slug={slug} alt={treatment.name} />
+        <div className="container-narrow relative px-4 sm:px-6 lg:px-8">
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },

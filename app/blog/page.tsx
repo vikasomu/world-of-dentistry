@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Clock, ArrowRight } from "lucide-react";
 import { SectionHeading } from "@/components/layout/SectionHeading";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { blogPosts } from "@/data/clinic";
+import { getBlogImage, siteImages } from "@/data/images";
 
 export const metadata: Metadata = {
   title: "Dental Knowledge Center",
@@ -31,6 +33,23 @@ export default function BlogPage() {
           description="Evidence-informed articles for general education. Always consult a dentist for personal advice."
         />
 
+        <div className="relative mb-12 aspect-[21/9] overflow-hidden rounded-3xl">
+          <OptimizedImage
+            src={siteImages.hero.secondary}
+            alt={siteImages.hero.alt}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/50 to-transparent" />
+          <div className="absolute inset-0 flex items-end p-8 md:p-10">
+            <p className="max-w-xl text-sm leading-relaxed text-white/90 md:text-base">
+              Practical guides on implants, preventive care, orthodontics, and everyday oral health — written for patients, not clinicians.
+            </p>
+          </div>
+        </div>
+
         <div className="mb-10 flex flex-wrap gap-2">
           {categories.map((cat) => (
             <span
@@ -43,12 +62,22 @@ export default function BlogPage() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {blogPosts.map((post) => (
+          {blogPosts.map((post) => {
+            const image = getBlogImage(post.slug);
+            return (
             <article
               key={post.slug}
               className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-white"
             >
-              <div className="aspect-[16/9] bg-gradient-to-br from-aqua-light to-secondary" />
+              <div className="relative aspect-[16/9] overflow-hidden">
+                <OptimizedImage
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
               <div className="flex flex-1 flex-col p-6">
                 <span className="text-xs font-semibold uppercase tracking-wider text-aqua">
                   {post.category}
@@ -75,7 +104,8 @@ export default function BlogPage() {
                 </Link>
               </div>
             </article>
-          ))}
+          );
+          })}
         </div>
       </div>
     </section>

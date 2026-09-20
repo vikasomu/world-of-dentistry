@@ -3,9 +3,11 @@ import { Calendar, CheckCircle2 } from "lucide-react";
 import { AppointmentForm } from "@/components/appointment/AppointmentForm";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { getBreadcrumbSchema } from "@/lib/seo/structured-data";
 import { contact } from "@/data/clinic";
+import { siteImages } from "@/data/images";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Book an Appointment",
@@ -79,6 +81,19 @@ export default function AppointmentPage() {
                     appointment.
                   </p>
                 </div>
+              </div>
+
+              <div className="relative mt-10 hidden aspect-[4/3] overflow-hidden rounded-3xl lg:block">
+                <OptimizedImage
+                  src={siteImages.hero.primary}
+                  alt={siteImages.hero.alt}
+                  fill
+                  sizes="50vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
+                <p className="absolute bottom-4 left-4 right-4 text-sm text-white/90">
+                  Comfortable, modern treatment rooms in Sector 46, Gurugram
+                </p>
               </div>
             </div>
 

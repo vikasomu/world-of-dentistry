@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { getBlogPostBySlug, blogPosts, medicalDisclaimer } from "@/data/clinic";
+import { getBlogImage } from "@/data/images";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -17,6 +19,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const post = getBlogPostBySlug(slug);
   if (!post) return { title: "Article Not Found" };
 
+  const image = getBlogImage(slug);
+
   return {
     title: post.title,
     description: post.excerpt,
@@ -26,6 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt || post.publishedAt,
       authors: [post.author],
+      images: [{ url: image.src, alt: image.alt }],
     },
   };
 }
@@ -34,6 +39,8 @@ export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
   const post = getBlogPostBySlug(slug);
   if (!post) notFound();
+
+  const image = getBlogImage(slug);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -85,6 +92,16 @@ export default async function BlogPostPage({ params }: PageProps) {
               <Clock className="h-4 w-4" />
               {post.readTime}
             </span>
+          </div>
+
+          <div className="relative mt-10 aspect-[16/9] overflow-hidden rounded-2xl">
+            <OptimizedImage
+              src={image.src}
+              alt={image.alt}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 768px"
+            />
           </div>
 
           <div className="prose prose-navy mt-10 max-w-none">

@@ -1,7 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { useThreeEnabled } from "@/lib/hooks/use-three-enabled";
+import { siteImages } from "@/data/images";
 import { cn } from "@/lib/utils/cn";
 
 const HeroToothScene = dynamic(
@@ -54,12 +56,20 @@ function HeroVisualFallback({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "relative flex items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br from-aqua-light via-white to-secondary",
+        "relative flex items-center justify-center overflow-hidden rounded-3xl",
         className
       )}
       aria-hidden
     >
-      <svg viewBox="0 0 200 240" className="h-2/3 w-2/3 text-navy/15">
+      <Image
+        src={siteImages.hero.secondary}
+        alt=""
+        fill
+        className="object-cover"
+        sizes="(max-width: 768px) 100vw, 50vw"
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-aqua-light/80 via-white/70 to-secondary/80" />
+      <svg viewBox="0 0 200 240" className="relative z-10 h-2/3 w-2/3 text-navy/15">
         <path
           d="M100 20 C130 20 160 50 160 90 C160 130 140 180 100 220 C60 180 40 130 40 90 C40 50 70 20 100 20 Z"
           fill="none"
@@ -76,12 +86,19 @@ function TechnologyVisualFallback({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "flex items-center justify-center rounded-2xl bg-navy/5",
+        "relative flex items-center justify-center overflow-hidden rounded-2xl bg-navy/5",
         className
       )}
       aria-hidden
     >
-      <svg viewBox="0 0 120 140" className="h-32 w-32 text-aqua/40">
+      <Image
+        src={siteImages.technology.equipment}
+        alt=""
+        fill
+        className="object-cover opacity-40"
+        sizes="(max-width: 1024px) 100vw, 50vw"
+      />
+      <svg viewBox="0 0 120 140" className="relative z-10 h-32 w-32 text-aqua/40">
         <ellipse cx="60" cy="55" rx="35" ry="42" fill="none" stroke="currentColor" strokeWidth="1.5" />
         <path d="M40 95 Q60 120 80 95" fill="none" stroke="currentColor" strokeWidth="1.5" />
       </svg>

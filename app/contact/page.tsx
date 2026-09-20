@@ -6,11 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Phone, Mail, MapPin, Clock, MessageCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { SectionHeading } from "@/components/layout/SectionHeading";
 import { Button } from "@/components/ui/button";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { contactSchema, type ContactFormData } from "@/lib/validation/schemas";
 import { contact } from "@/data/clinic";
+import { siteImages } from "@/data/images";
 import { trackEvent } from "@/lib/utils/analytics";
 
 export default function ContactPage() {
@@ -57,6 +59,22 @@ export default function ContactPage() {
           description="Reach out for appointments, questions, or emergency guidance."
           align="center"
         />
+
+        <div className="relative mb-12 aspect-[21/9] overflow-hidden rounded-3xl">
+          <OptimizedImage
+            src={siteImages.clinic.interior}
+            alt={siteImages.clinic.altInterior}
+            fill
+            priority
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/40 to-transparent" />
+          <div className="absolute inset-0 flex items-end p-8">
+            <p className="max-w-lg text-sm text-white/90 md:text-base">
+              Visit {contact.address.full} — open daily with 24/7 emergency support.
+            </p>
+          </div>
+        </div>
 
         <div className="grid gap-12 lg:grid-cols-2">
           <div className="space-y-6">

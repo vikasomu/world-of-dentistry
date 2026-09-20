@@ -6,7 +6,9 @@ import { SectionHeading } from "@/components/layout/SectionHeading";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { getBreadcrumbSchema } from "@/lib/seo/structured-data";
+import { DoctorPortrait } from "@/components/ui/optimized-image";
 import { doctors } from "@/data/clinic";
+import { getDoctorImage } from "@/data/images";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Our Dental Specialists in Gurgaon",
@@ -36,13 +38,20 @@ export default function DoctorsIndexPage() {
           />
 
           <div className="grid gap-8 md:grid-cols-2">
-            {doctors.map((doctor) => (
+            {doctors.map((doctor) => {
+              const image = getDoctorImage(doctor.slug);
+              return (
               <Link
                 key={doctor.slug}
                 href={`/doctors/${doctor.slug}`}
                 className="group overflow-hidden rounded-3xl border border-border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
               >
-                <div className="aspect-[16/9] bg-gradient-to-br from-navy to-navy-light" />
+                <DoctorPortrait
+                  initials={image.initials}
+                  name={doctor.name}
+                  placeholder={image.placeholder}
+                  className="aspect-[16/9]"
+                />
                 <div className="p-6">
                   <h2 className="font-heading text-2xl font-medium text-navy">
                     {doctor.name}
@@ -58,7 +67,8 @@ export default function DoctorsIndexPage() {
                   </span>
                 </div>
               </Link>
-            ))}
+            );
+            })}
           </div>
         </div>
       </section>

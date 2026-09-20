@@ -9,8 +9,10 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { SectionHeading } from "@/components/layout/SectionHeading";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { TechnologyVisual3D } from "@/components/three/LazyThreeVisuals";
 import { technologies } from "@/data/clinic";
+import { siteImages } from "@/data/images";
 import { cn } from "@/lib/utils/cn";
 
 const phases = [
@@ -58,6 +60,13 @@ export function TechnologySection() {
 
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="relative aspect-square max-h-[420px] overflow-hidden rounded-3xl border border-white/10 bg-white/5 lg:max-h-none">
+            <OptimizedImage
+              src={siteImages.technology.equipment}
+              alt={siteImages.technology.alt}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="opacity-30"
+            />
             {shouldReduceMotion ? (
               <TechnologyVisual3D progress={0.5} className="h-full w-full" />
             ) : (

@@ -11,7 +11,9 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { SectionHeading } from "@/components/layout/SectionHeading";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { whyChooseUs } from "@/data/clinic";
+import { siteImages } from "@/data/images";
 
 const iconMap: Record<string, LucideIcon> = {
   "user-check": UserCheck,
@@ -35,7 +37,8 @@ export function WhyChooseUs() {
           align="center"
         />
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-10 lg:grid-cols-[1fr_380px] lg:items-start">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
           {whyChooseUs.map((item, index) => {
             const Icon = iconMap[item.icon] || Sparkles;
             return (
@@ -60,6 +63,20 @@ export function WhyChooseUs() {
               </motion.article>
             );
           })}
+        </div>
+
+        <div className="relative hidden aspect-[3/4] overflow-hidden rounded-3xl lg:block">
+          <OptimizedImage
+            src={siteImages.clinic.interior}
+            alt={siteImages.clinic.altInterior}
+            fill
+            sizes="380px"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
+          <p className="absolute bottom-6 left-6 right-6 text-sm leading-relaxed text-white/90">
+            A calm, modern environment designed for comfort at every stage of your visit.
+          </p>
+        </div>
         </div>
       </div>
     </section>

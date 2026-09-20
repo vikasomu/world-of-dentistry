@@ -4,9 +4,11 @@ import { MapPin, Phone, Clock } from "lucide-react";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/button";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { getBreadcrumbSchema, getOrganizationSchema } from "@/lib/seo/structured-data";
 import { clinicName, clinicDescription, contact, treatments } from "@/data/clinic";
+import { siteImages } from "@/data/images";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Dentist in Gurgaon | Dental Clinic Sector 46",
@@ -54,6 +56,17 @@ export default function GurgaonLocationPage() {
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
             {clinicDescription} Visit us at {contact.address.full}.
           </p>
+
+          <div className="relative mt-10 aspect-[21/9] overflow-hidden rounded-3xl">
+            <OptimizedImage
+              src={siteImages.hero.primary}
+              alt={siteImages.hero.alt}
+              fill
+              priority
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/75 via-navy/20 to-transparent" />
+          </div>
 
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             <div className="rounded-2xl border border-border p-5">

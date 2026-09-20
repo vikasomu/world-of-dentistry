@@ -1,14 +1,20 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, GraduationCap } from "lucide-react";
+import { GraduationCap } from "lucide-react";
 import { AppointmentForm } from "@/components/appointment/AppointmentForm";
+import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { DoctorPortrait } from "@/components/ui/optimized-image";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import { getBreadcrumbSchema, getDoctorSchema } from "@/lib/seo/structured-data";
 import {
   doctors,
   getDoctorBySlug,
   getTreatmentBySlug,
   medicalDisclaimer,
 } from "@/data/clinic";
+import { getDoctorImage } from "@/data/images";
+import type { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -23,11 +29,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const doctor = getDoctorBySlug(slug);
   if (!doctor) return { title: "Doctor Not Found" };
 
-  return {
+  return createPageMetadata({
     title: `${doctor.name} — ${doctor.title}`,
     description: doctor.biography.slice(0, 160),
-    alternates: { canonical: `/doctors/${slug}` },
-  };
+    path: `/doctors/${slug}`,
+    keywords: [doctor.name, ...doctor.specializations, "dentist Gurgaon"],
+  });
 }
 
 export default async function DoctorPage({ params }: PageProps) {
@@ -35,22 +42,37 @@ export default async function DoctorPage({ params }: PageProps) {
   const doctor = getDoctorBySlug(slug);
   if (!doctor) notFound();
 
+  const image = getDoctorImage(slug);
   const doctorTreatments = doctor.treatments
     .map((s) => getTreatmentBySlug(s))
     .filter(Boolean);
 
   return (
     <>
+      <JsonLd
+        data={[
+          getDoctorSchema(doctor),
+          getBreadcrumbSchema([
+            { name: "Home", url: "https://www.worldofdentistry.co.in/" },
+            { name: "Doctors", url: "https://www.worldofdentistry.co.in/doctors" },
+            {
+              name: doctor.name,
+              url: `https://www.worldofdentistry.co.in/doctors/${slug}`,
+            },
+          ]),
+        ]}
+      />
       <section className="bg-gradient-to-br from-navy to-navy-light pt-28 pb-16 text-white">
         <div className="container-narrow px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/#doctors"
-            className="mb-6 inline-flex items-center gap-2 text-sm text-white/70 hover:text-white"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            All Doctors
-          </Link>
-          <div className="grid items-end gap-8 md:grid-cols-2">
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Doctors", href: "/doctors" },
+              { label: doctor.name },
+            ]}
+            className="mb-6 [&_a]:text-white/70 [&_a:hover]:text-white [&_span]:text-white [&_svg]:text-white/50"
+          />
+          <div className="grid items-center gap-8 md:grid-cols-2">
             <div>
               <h1 className="font-heading text-4xl font-medium md:text-5xl">
                 {doctor.name}
@@ -61,7 +83,12 @@ export default async function DoctorPage({ params }: PageProps) {
                 <span>{doctor.qualifications.join(" · ")}</span>
               </div>
             </div>
-            <div className="aspect-square max-h-64 rounded-3xl bg-white/10 backdrop-blur-sm" />
+            <DoctorPortrait
+              initials={image.initials}
+              name={doctor.name}
+              placeholder={image.placeholder}
+              className="aspect-square max-h-80 w-full rounded-3xl ring-2 ring-white/20"
+            />
           </div>
         </div>
       </section>
